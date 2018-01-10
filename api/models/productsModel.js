@@ -9,12 +9,15 @@ var ProductSchema = new Schema({
     required: [true, 'Name of product can not by empty'],
     unique: true
   },
-  category_name: {
-    type: String,
-    required: [true, 'Name of category can not by empty']
-  },
+  // category_name: {
+  //   type: String,
+  //   required: [true, 'Name of category can not by empty']
+  // },
   preview: {
     type: String,
+  },
+  photos: {
+    type: Array
   },
   s_count: {
     type: Number,

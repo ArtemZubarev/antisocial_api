@@ -1,4 +1,4 @@
-var express = require('express'),
+const express = require('express'),
     app = express(),
     port = process.env.PORT || 3000,
     mongoose = require('mongoose'),
@@ -6,7 +6,9 @@ var express = require('express'),
     Category = require('./api/models/categoriesModel'),
     bodyParser = require('body-parser'),
     config = require('./api/config/config'),
-    path = require('path');;
+    path = require('path'),
+    fileUpload = require('express-fileupload'),
+    fs = require('fs');
 
 
 mongoose.Promise = global.Promise;
@@ -15,7 +17,7 @@ mongoose.connect(config.connection);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
+app.use(fileUpload());
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
