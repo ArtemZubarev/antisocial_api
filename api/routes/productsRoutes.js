@@ -1,7 +1,9 @@
 'use strict';
 module.exports = function(app) {
+
   let productsController = require('../controllers/productsController'),
-      fs = require('fs');
+      fs = require('fs'),
+      sharp = require('sharp');
 
   // app.route('/api/products')
   //     .get(productsController.get_all)
@@ -27,12 +29,19 @@ module.exports = function(app) {
         sampleFile[value].mv(`./public/products/${savingPhtoName}/${savingPhtoName}_${fileCounter}.jpg`, function(err) {
           if (err)
             return res.status(500).send(err);
-          req.body.photos.push(`./public/products/${savingPhtoName}/${savingPhtoName}_${fileCounter}.jpg`)
+          req.body.photos.push(`./public/products/${savingPhtoName}/${savingPhtoName}_${fileCounter}.jpg`);
+          sharp(`./public/products/${savingPhtoName}/${savingPhtoName}_1.jpg`).resize(300, 306)
+              .toFile(`./public/products/${savingPhtoName}/preview.jpg`, function(err) {
+                console.log(err)
+              });
         });
         fileCounter++;
       }
+
+      req.body.preview = req.body.photos[0];
     }
-    req.body.preview = req.body.photos[0]
+
+
     productsController.create(req,res)
   });
 
