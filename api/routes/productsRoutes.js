@@ -8,7 +8,7 @@ module.exports = function(app) {
   // app.route('/api/products')
   //     .get(productsController.get_all)
   //     .post(productsController.create);
-  app.get('/api/products', productsController.get_all)
+  app.get('/api/products', productsController.get_all);
 
   app.post('/api/products', function(req,res) {
     if (req.files) {
@@ -23,25 +23,37 @@ module.exports = function(app) {
       if (!fs.existsSync(`./public/products/${savingPhtoName}`)){
         fs.mkdirSync(`./public/products/${savingPhtoName}`);
       }
+      let previewType = sampleFile.preview.mimetype.replace('image/', '');
 
+      sampleFile.preview.mv(`./public/products/${savingPhtoName}/temp_preview.${previewType}`, function(err) {
+        if (err)
+          return res.status(500).send(err);
+        console.log('sass')
+        sharp(`./public/products/${savingPhtoName}/temp_preview.${previewType}`)
+            .resize(590, 603)
+            .crop(sharp.strategy.entropy)
+            .toFile(`./public/products/${savingPhtoName}/preview.${previewType}`, function(err) {
+              if (err) return res.status(500).send(err);
+              fs.unlink(`./public/products/${savingPhtoName}/temp_preview.${previewType}`, function (err) {
+                if (err) console.log(err)
+              });
+
+            });
+      });
+      req.body.preview = `/products/${savingPhtoName}/preview.${previewType}`;
       for (let value in sampleFile) {
-        req.body.photos.push(`/products/${savingPhtoName}/${savingPhtoName}_${fileCounter}.jpg`)
+        let type = sampleFile[value].mimetype.replace('image/', '');
+        req.body.photos.push(`/products/${savingPhtoName}/${savingPhtoName}_${fileCounter}.jpg`);
+
         sampleFile[value].mv(`./public/products/${savingPhtoName}/${savingPhtoName}_${fileCounter}.jpg`, function(err) {
           if (err)
             return res.status(500).send(err);
-          req.body.photos.push(`./public/products/${savingPhtoName}/${savingPhtoName}_${fileCounter}.jpg`);
-          sharp(`./public/products/${savingPhtoName}/${savingPhtoName}_1.jpg`).resize(300, 306)
-              .toFile(`./public/products/${savingPhtoName}/preview.jpg`, function(err) {
-                console.log(err)
-              });
         });
         fileCounter++;
       }
 
-      req.body.preview = req.body.photos[0];
+
     }
-
-
     productsController.create(req,res)
   });
 

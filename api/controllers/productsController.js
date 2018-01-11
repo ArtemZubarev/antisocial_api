@@ -21,6 +21,11 @@ exports.create = function(req, res) {
 };
 
 exports.get_one = function(req, res) {
+  // Product.findOne({name: req.params.id}, function(err, product) {
+  //   if (err)
+  //     res.send(err);
+  //   res.json(product);
+  // });
   Product.findById(req.params.id, function(err, product) {
     if (err)
       res.send(err);
