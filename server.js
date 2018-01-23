@@ -4,6 +4,7 @@ const express = require('express'),
     mongoose = require('mongoose'),
     Product = require('./api/models/productsModel'),
     Category = require('./api/models/categoriesModel'),
+    Music = require('./api/models/musicModel'),
     bodyParser = require('body-parser'),
     config = require('./api/config/config'),
     path = require('path'),
@@ -24,10 +25,13 @@ app.use(function(req, res, next) {
   next();
 });
 
-var categoriesRoutes = require('./api/routes/productsRoutes');
-var productsRoutes = require('./api/routes/categoriesRoutes');
+let categoriesRoutes = require('./api/routes/productsRoutes');
+let productsRoutes = require('./api/routes/categoriesRoutes');
+let musicRoutes = require('./api/routes/musicRoutes');
+
 categoriesRoutes(app);
 productsRoutes(app);
+musicRoutes(app);
 
 app.listen(port);
 
